@@ -1,0 +1,13 @@
+bin
+obj
+csx
+*ReSharper*
+*.user
+*.suo
+logs
+
+# NuGet packages
+packages*
+!repositories.config
+!packages.config
+build/build
