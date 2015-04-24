@@ -8,7 +8,7 @@ namespace ASB.NativeIntegration.Client
     {
         static void Main(string[] args)
         {
-            var factory = MessagingFactory.CreateFromConnectionString("enter your connectionstring");
+            var factory = MessagingFactory.CreateFromConnectionString("enter connectionstring");
             var client = factory.CreateMessageSender("nativequeue");
             var body = "<TestCommand><SomeContent>Some Data</SomeContent></TestCommand>";
 
@@ -19,6 +19,7 @@ namespace ASB.NativeIntegration.Client
             {
                 client.Send(new BrokeredMessage(body)
                 {
+                    MessageId = Guid.NewGuid().ToString(),
                     ContentType = "text/xml"
                 });
 

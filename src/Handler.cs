@@ -12,6 +12,9 @@ namespace ASB.NativeIntegration
         {
             Console.WriteLine("Received test command");
 
+            // uncomment to test FLR
+            // throw new Exception("some exception");
+
             Bus.Publish(new TestEvent{ SomeContent = message.SomeContent });
         }
     }

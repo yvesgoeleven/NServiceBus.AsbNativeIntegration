@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.ServiceBus.Messaging;
@@ -31,7 +32,7 @@ namespace ASB.NativeIntegration
             }
             else
             {
-                t = new TransportMessage
+                t = new TransportMessage(message.MessageId, new Dictionary<string, string>())
                 {
                     Body = Encoding.UTF8.GetBytes(rawMessage)
                 };
