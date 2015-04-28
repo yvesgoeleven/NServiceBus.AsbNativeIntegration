@@ -12,10 +12,10 @@ namespace ASB.NativeIntegration
         public static TransportMessage ToTransportMessage(this BrokeredMessage message)
         {
             TransportMessage t;
-            var rawMessage = message.GetBody<string>() ?? "";
 
-            if (message.Properties.Count > 0)
+            if (HasNServiceBusHeaders(message))
             {
+                var rawMessage = message.GetBody<byte[]>() ?? new byte[0];
                 var headers = message.Properties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value as string);
                 if (!String.IsNullOrWhiteSpace(message.ReplyTo))
                 {
@@ -27,18 +27,26 @@ namespace ASB.NativeIntegration
                     CorrelationId = message.CorrelationId,
                     TimeToBeReceived = message.TimeToLive,
                     MessageIntent = (MessageIntentEnum)Enum.Parse(typeof(MessageIntentEnum), message.Properties[Headers.MessageIntent].ToString()),
-                    Body = Encoding.UTF8.GetBytes(rawMessage)
+                    Body = rawMessage
                 };
             }
             else
             {
-                t = new TransportMessage(message.MessageId, new Dictionary<string, string>())
+                var rawMessage = message.GetBody<string>() ?? "";
+                var headers = message.Properties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value as string);
+                headers.Add("NServiceBus.Native", "string");
+                t = new TransportMessage(message.MessageId, headers)
                 {
                     Body = Encoding.UTF8.GetBytes(rawMessage)
                 };
             }
 
             return t;
+        }
+
+        private static bool HasNServiceBusHeaders(BrokeredMessage message)
+        {
+            return message.Properties.Any(h => h.Key.StartsWith("NServiceBus."));
         }
     }
 }

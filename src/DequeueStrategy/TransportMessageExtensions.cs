@@ -8,9 +8,7 @@ namespace ASB.NativeIntegration
     {
         public static bool IsNativeMessage(this TransportMessage transportMessage)
         {
-            // assumption that content is an utf8 encoded string
-            var decoded = Encoding.UTF8.GetString(transportMessage.Body);
-            return decoded.StartsWith("<");
+            return transportMessage.Headers.ContainsKey("NServiceBus.Native");
         }
 
         public static bool IsControlMessage(this TransportMessage transportMessage)
